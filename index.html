@@ -32,6 +32,22 @@
             <h2>Sawer via PayPal</h2>
             <p>Jika Anda ingin mendukung kami, Anda bisa melakukan saweran via PayPal dengan mengklik tombol di bawah ini:</p>
             <a href="https://paypal.me/zaimkn?country.x=ID&locale.x=id_ID" target="_blank" class="paypal-button">Sawer via PayPal</a>
+            
+            <h3>Komentar</h3>
+            <form id="commentForm">
+                <label for="username">Nama:</label>
+                <input type="text" id="username" name="username" required>
+                
+                <label for="comment">Komentar:</label>
+                <textarea id="comment" name="comment" rows="4" required></textarea>
+                
+                <button type="submit">Kirim</button>
+            </form>
+            
+            <div id="commentsSection">
+                <h4>Komentar:</h4>
+                <ul id="commentsList"></ul>
+            </div>
         </section>
     </main>
     <script src="script.js"></script>
