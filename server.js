@@ -4,43 +4,46 @@ const session = require('express-session');
 const app = express();
 const port = 3000;
 
+// Middleware
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
-app.use(session({ secret: 'secret', resave: false, saveUninitialized: true }));
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: true
+}));
 
-// Dummy users database
-const users = { 'user': 'password' };
+// Simulasi data pengguna (bisa diganti dengan database)
+const users = { 'user1': 'password123' };
 
-// Login endpoint
+// Halaman login
+app.get('/login', (req, res) => {
+  res.sendFile(__dirname + '/public/login.html');
+});
+
+// Proses login
 app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-    if (users[username] && users[username] === password) {
-        req.session.user = username;
-        console.log(`User ${username} logged in`);
-        res.status(200).send('Login successful');
-    } else {
-        res.status(401).send('Invalid credentials');
-    }
+  const { username, password } = req.body;
+  if (users[username] && users[username] === password) {
+    req.session.user = username;
+    res.status(200).send('Login successful');
+  } else {
+    res.status(401).send('Invalid credentials');
+  }
 });
 
-// Comments endpoint
-let comments = []; // Temporary storage for comments
-
-app.get('/comments', (req, res) => {
-    res.json(comments);
-});
-
+// Proses komentar
 app.post('/comments', (req, res) => {
-    if (!req.session.user) {
-        console.log('Unauthorized comment attempt');
-        return res.status(403).send('Unauthorized');
-    }
-    const { comment } = req.body;
-    comments.push({ username: req.session.user, comment });
-    console.log(`Comment added by ${req.session.user}: ${comment}`);
-    res.status(200).send('Comment added');
+  if (req.session.user) {
+    // Simpan komentar ke database atau memori
+    console.log(req.body.comment);
+    res.json({ success: true });
+  } else {
+    res.status(401).json({ error: 'Unauthorized' });
+  }
 });
 
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+  console.log(`Server running at http://localhost:${port}`);
 });
