@@ -16,6 +16,7 @@ app.use(session({
 
 // Simulasi data pengguna (bisa diganti dengan database)
 const users = { 'user1': 'password123' };
+const comments = []; // Simpan komentar di memori
 
 // Halaman login
 app.get('/login', (req, res) => {
@@ -33,15 +34,29 @@ app.post('/login', (req, res) => {
   }
 });
 
+// Halaman utama
+app.get('/', (req, res) => {
+  if (req.session.user) {
+    res.sendFile(__dirname + '/public/index.html');
+  } else {
+    res.redirect('/login');
+  }
+});
+
 // Proses komentar
 app.post('/comments', (req, res) => {
   if (req.session.user) {
-    // Simpan komentar ke database atau memori
-    console.log(req.body.comment);
+    const comment = req.body.comment;
+    comments.push(comment); // Simpan komentar
     res.json({ success: true });
   } else {
     res.status(401).json({ error: 'Unauthorized' });
   }
+});
+
+// Ambil komentar
+app.get('/comments', (req, res) => {
+  res.json({ comments });
 });
 
 app.listen(port, () => {
