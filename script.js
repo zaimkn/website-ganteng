@@ -1,93 +1,23 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Handle registration
-    const registerForm = document.getElementById('registerForm');
-    if (registerForm) {
-        registerForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+    const commentSection = document.getElementById('commentSection');
+    const authLinks = document.getElementById('authLinks');
+    const logoutLink = document.getElementById('logoutLink');
+    const logoutButton = document.getElementById('logoutButton');
 
-            const response = await fetch('/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
+    // Periksa status login dari localStorage
+    const loggedIn = localStorage.getItem('loggedIn');
 
-            if (response.ok) {
-                alert('Registration successful');
-                window.location.href = '/login'; // Redirect to login page
-            } else {
-                alert('Error registering user');
-            }
-        });
+    if (loggedIn === 'true') {
+        authLinks.style.display = 'none';
+        logoutLink.style.display = 'block';
+    } else {
+        authLinks.style.display = 'block';
+        logoutLink.style.display = 'none';
     }
 
-    // Handle login
-    const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
-        loginForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            const response = await fetch('/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
-
-            if (response.ok) {
-                alert('Login successful');
-                window.location.href = '/'; // Redirect to main page
-            } else {
-                alert('Invalid credentials');
-            }
-        });
-    }
-
-    // Handle comment submission
-    const commentForm = document.getElementById('commentForm');
-    if (commentForm) {
-        commentForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const comment = document.getElementById('comment').value;
-
-            const response = await fetch('/comments', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ comment })
-            });
-
-            if (response.ok) {
-                alert('Comment submitted');
-                document.getElementById('comment').value = ''; // Clear comment input
-                loadComments(); // Reload comments
-            } else {
-                alert('Failed to submit comment');
-            }
-        });
-    }
-
-    // Function to load comments from the server
-    function loadComments() {
-        fetch('/comments')
-            .then(response => response.json())
-            .then(data => {
-                const commentsList = document.getElementById('commentsList');
-                if (commentsList) {
-                    commentsList.innerHTML = '';
-                    data.comments.forEach(comment => {
-                        const li = document.createElement('li');
-                        li.textContent = `${comment.user}: ${comment.text}`;
-                        commentsList.appendChild(li);
-                    });
-                }
-            })
-            .catch(error => console.error('Error:', error));
-    }
-
-    // Initial load of comments if on homepage
-    if (window.location.pathname === '/') {
-        loadComments();
-    }
+    // Logout button handler
+    logoutButton.addEventListener('click', () => {
+        localStorage.removeItem('loggedIn');
+        window.location.href = 'index.html';
+    });
 });
