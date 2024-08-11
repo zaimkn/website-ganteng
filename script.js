@@ -1,32 +1,55 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const commentForm = document.getElementById('commentForm');
-    const commentsList = document.getElementById('commentsList');
+const express = require('express');
+const bodyParser = require('body-parser');
+const session = require('express-session');
+const app = express();
+const port = 3000;
 
-    // Load comments from server
-    const loadComments = async () => {
-        const response = await fetch('/comments');
-        const comments = await response.json();
-        commentsList.innerHTML = comments.map(comment => 
-            `<li><strong>${comment.username}:</strong> ${comment.comment}</li>`
-        ).join('');
-    };
+app.use(bodyParser.json());
+app.use(express.static('public'));
+app.use(session({ secret: 'secret', resave: false, saveUninitialized: true }));
 
-    loadComments();
+// Dummy users database
+const users = { 'user': 'password' }; // Change this to your actual users database
 
-    commentForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const comment = document.getElementById('comment').value;
-        const response = await fetch('/comments', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ comment })
-        });
+// Login endpoint
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    if (users[username] && users[username] === password) {
+        req.session.user = username;
+        console.log(`User ${username} logged in`);
+        res.status(200).send('Login successful');
+    } else {
+        res.status(401).send('Invalid credentials');
+    }
+});
 
-        if (response.ok) {
-            document.getElementById('comment').value = '';
-            loadComments();
-        } else {
-            alert('Failed to add comment');
-        }
-    });
+// Comments endpoint
+let comments = []; // Temporary storage for comments
+
+app.get('/comments', (req, res) => {
+    res.json(comments);
+});
+
+app.post('/comments', (req, res) => {
+    if (!req.session.user) {
+        console.log('Unauthorized comment attempt');
+        return res.status(403).send('Unauthorized');
+    }
+    const { comment } = req.body;
+    comments.push({ username: req.session.user, comment });
+    console.log(`Comment added by ${req.session.user}: ${comment}`);
+    res.status(200).send('Comment added');
+});
+
+// Check login status
+app.get('/login/check', (req, res) => {
+    if (req.session.user) {
+        res.status(200).send('User is logged in');
+    } else {
+        res.status(403).send('Unauthorized');
+    }
+});
+
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
 });
