@@ -11,24 +11,39 @@
         <h1>Selamat Datang di Website Sederhana</h1>
         <nav>
             <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="#home">Beranda</a></li>
+                <li><a href="#about">Tentang Web</a></li>
+                <li><a href="#contact">Sawer via PayPal</a></li>
             </ul>
         </nav>
     </header>
     <main>
         <section id="home">
-            <h2>Home</h2>
+            <h2>Beranda</h2>
             <p>Ini adalah halaman utama.</p>
+            <button id="clickMe">Klik Saya</button>
         </section>
         <section id="about">
-            <h2>About</h2>
+            <h2>Tentang Web</h2>
             <p>Ini adalah halaman tentang.</p>
+            <img src="gambar-keren.jpg" alt="Gambar Keren" style="max-width: 100%; height: auto;">
         </section>
         <section id="contact">
-            <h2>Contact</h2>
-            <p>Ini adalah halaman kontak.</p>
+            <h2>Sawer via PayPal</h2>
+            <form action="mailto:email@domain.com" method="post" enctype="text/plain">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" rows="4" required></textarea>
+                
+                <button type="submit">Send</button>
+            </form>
+            <p>Atau, Anda bisa melakukan sawer via PayPal di sini:</p>
+            <a href="https://paypal.me/username" target="_blank" class="paypal-button">Sawer via PayPal</a>
         </section>
     </main>
     <script src="script.js"></script>
