@@ -1,36 +1,31 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
-const app = express();
-const port = 3000;
+const bodyParser = require('body-parser');
 
-// Koneksi ke MongoDB
-mongoose.connect('mongodb://localhost:27017/mydatabase', {
+const app = express();
+const PORT = 3000;
+
+mongoose.connect('mongodb://localhost:27017/website-ganteng', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
 
-const UserSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     username: String,
     password: String
 });
 
-const CommentSchema = new mongoose.Schema({
-    username: String,
-    text: String
-});
+const User = mongoose.model('User', userSchema);
 
-const User = mongoose.model('User', UserSchema);
-const Comment = mongoose.model('Comment', CommentSchema);
-
-app.use(bodyParser.json());
-app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
-    secret: 'mysecret',
+    secret: 'secret',
     resave: false,
     saveUninitialized: true
 }));
+
+app.use(express.static('public'));
 
 // Rute Registrasi
 app.post('/register', async (req, res) => {
@@ -60,49 +55,22 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// Rute Logout
-app.post('/logout', (req, res) => {
-    req.session.destroy();
-    res.status(200).send('Logout berhasil');
-});
-
-// Middleware untuk memeriksa autentikasi
-function checkAuth(req, res, next) {
-    if (req.session.user) {
-        next();
-    } else {
-        res.status(403).send('Anda harus login untuk mengakses halaman ini');
-    }
-}
-
-// Rute untuk mendapatkan komentar
+// Rute untuk mendapatkan komentar (sederhana)
 app.get('/comments', async (req, res) => {
-    try {
-        const comments = await Comment.find();
-        res.json(comments);
-    } catch (error) {
-        res.status(500).send('Gagal mengambil komentar');
-    }
+    // Logika untuk mengambil komentar dari database
 });
 
-// Rute untuk menambahkan komentar
-app.post('/comments', checkAuth, async (req, res) => {
-    const { text } = req.body;
+// Rute untuk menambahkan komentar (sederhana)
+app.post('/comments', async (req, res) => {
+    const { comment } = req.body;
     try {
-        const comment = new Comment({ username: req.session.user.username, text });
-        await comment.save();
+        // Logika untuk menyimpan komentar ke database
         res.status(200).send('Komentar berhasil ditambahkan');
     } catch (error) {
         res.status(500).send('Gagal menambahkan komentar');
     }
 });
 
-// Rute untuk halaman utama
-app.get('/', checkAuth, (req, res) => {
-    res.sendFile(__dirname + '/public/index.html');
-});
-
-// Jalankan server
-app.listen(port, () => {
-    console.log(`Server berjalan di http://localhost:${port}`);
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
 });
