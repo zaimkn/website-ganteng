@@ -1,5 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Login
+    // Handle registration
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            if (response.ok) {
+                alert('Registration successful');
+                window.location.href = '/login'; // Redirect to login page
+            } else {
+                alert('Error registering user');
+            }
+        });
+    }
+
+    // Handle login
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', async (event) => {
@@ -15,15 +38,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 alert('Login successful');
-                // Redirect or refresh to show comment section
-                window.location.reload();
+                window.location.href = '/'; // Redirect to main page
             } else {
                 alert('Invalid credentials');
             }
         });
     }
 
-    // Komentar
+    // Handle comment submission
     const commentForm = document.getElementById('commentForm');
     if (commentForm) {
         commentForm.addEventListener('submit', async (event) => {
@@ -56,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     commentsList.innerHTML = '';
                     data.comments.forEach(comment => {
                         const li = document.createElement('li');
-                        li.textContent = comment;
+                        li.textContent = `${comment.user}: ${comment.text}`;
                         commentsList.appendChild(li);
                     });
                 }
