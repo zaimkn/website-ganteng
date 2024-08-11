@@ -1,23 +1,48 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const commentSection = document.getElementById('commentSection');
-    const authLinks = document.getElementById('authLinks');
-    const logoutLink = document.getElementById('logoutLink');
-    const logoutButton = document.getElementById('logoutButton');
+    const loginForm = document.getElementById('loginForm');
+    const commentForm = document.getElementById('commentForm');
 
-    // Periksa status login dari localStorage
-    const loggedIn = localStorage.getItem('loggedIn');
-
-    if (loggedIn === 'true') {
-        authLinks.style.display = 'none';
-        logoutLink.style.display = 'block';
-    } else {
-        authLinks.style.display = 'block';
-        logoutLink.style.display = 'none';
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(loginForm);
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.text();
+                if (response.ok) {
+                    alert('Login berhasil!');
+                    window.location.reload();  // Reload page to show login state
+                } else {
+                    alert(result);
+                }
+            } catch (error) {
+                alert('Terjadi kesalahan: ' + error.message);
+            }
+        });
     }
 
-    // Logout button handler
-    logoutButton.addEventListener('click', () => {
-        localStorage.removeItem('loggedIn');
-        window.location.href = 'index.html';
-    });
+    if (commentForm) {
+        commentForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(commentForm);
+            try {
+                const response = await fetch('/comments', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.text();
+                if (response.ok) {
+                    alert('Komentar berhasil dikirim!');
+                    // Optionally refresh comments section here
+                } else {
+                    alert(result);
+                }
+            } catch (error) {
+                alert('Terjadi kesalahan: ' + error.message);
+            }
+        });
+    }
 });
