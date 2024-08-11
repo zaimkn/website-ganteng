@@ -14,13 +14,8 @@
                 <li><a href="#home">Beranda</a></li>
                 <li><a href="#about">Tentang Web</a></li>
                 <li><a href="#contact">Sawer via PayPal</a></li>
-                <li id="authLinks">
-                    <a href="register.html">Daftar</a> | 
-                    <a href="login.html">Login</a>
-                </li>
-                <li id="logoutLink" style="display: none;">
-                    <a href="#" id="logoutButton">Logout</a>
-                </li>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="register.html">Register</a></li>
             </ul>
         </nav>
     </header>
@@ -41,17 +36,29 @@
             <a href="https://paypal.me/zaimkn?country.x=ID&locale.x=id_ID" target="_blank" class="paypal-button">Sawer via PayPal</a>
             
             <!-- Komentar Section -->
-            <div id="commentSection">
-                <h3>Komentar</h3>
-                <form id="commentForm">
-                    <label for="comment">Komentar:</label>
-                    <textarea id="comment" name="comment" rows="4" required></textarea>
-                    <button type="submit">Kirim</button>
+            <div id="loginSection">
+                <h3>Login</h3>
+                <form id="loginForm" action="/login" method="POST">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                    <br>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                    <br>
+                    <button type="submit">Login</button>
                 </form>
-                <div id="commentsSection">
-                    <h4>Komentar:</h4>
-                    <ul id="commentsList"></ul>
-                </div>
+            </div>
+            
+            <h3>Komentar</h3>
+            <form id="commentForm" action="/comments" method="POST">
+                <label for="comment">Komentar:</label>
+                <textarea id="comment" name="comment" rows="4" required></textarea>
+                <button type="submit">Kirim</button>
+            </form>
+            
+            <div id="commentsSection">
+                <h4>Komentar:</h4>
+                <ul id="commentsList"></ul>
             </div>
         </section>
     </main>
