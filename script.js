@@ -1,21 +1,21 @@
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', () => {
     const commentForm = document.getElementById('commentForm');
     const commentsList = document.getElementById('commentsList');
-    
+
     // Load comments from server
     const loadComments = async () => {
         const response = await fetch('/comments');
         const comments = await response.json();
-        commentsList.innerHTML = comments.map(comment => `<li><strong>${comment.username}:</strong> ${comment.comment}</li>`).join('');
+        commentsList.innerHTML = comments.map(comment => 
+            `<li><strong>${comment.username}:</strong> ${comment.comment}</li>`
+        ).join('');
     };
 
     loadComments();
-    
+
     commentForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-        
         const comment = document.getElementById('comment').value;
-        
         const response = await fetch('/comments', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
