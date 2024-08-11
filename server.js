@@ -17,10 +17,7 @@ mongoose.connect('mongodb://localhost/yourdatabase', {
 });
 
 app.post('/register', async (req, res) => {
-    console.log('Received request to /register'); // Log untuk debugging
     const { username, password } = req.body;
-    console.log('Username:', username); // Log data yang diterima
-    console.log('Password:', password); // Log data yang diterima
     try {
         const existingUser = await User.findOne({ username });
         if (existingUser) {
@@ -31,8 +28,43 @@ app.post('/register', async (req, res) => {
         await user.save();
         res.status(200).send('Registrasi berhasil');
     } catch (error) {
-        console.error('Error:', error); // Log kesalahan
         res.status(500).send('Registrasi gagal');
+    }
+});
+
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    try {
+        const user = await User.findOne({ username, password });
+        if (!user) {
+            return res.status(401).send('Username atau password salah');
+        }
+        res.status(200).send('Login berhasil');
+    } catch (error) {
+        res.status(500).send('Login gagal');
+    }
+});
+
+app.post('/comments', async (req, res) => {
+    const { comment } = req.body;
+    try {
+        // Simpan komentar ke database atau di memori untuk sementara
+        // const newComment = new Comment({ text: comment });
+        // await newComment.save();
+        res.status(200).send('Komentar berhasil dikirim');
+    } catch (error) {
+        res.status(500).send('Gagal mengirim komentar');
+    }
+});
+
+app.get('/comments', async (req, res) => {
+    try {
+        // Ambil komentar dari database atau memori
+        // const comments = await Comment.find();
+        const comments = ['Komentar 1', 'Komentar 2']; // Contoh komentar statis
+        res.status(200).json(comments);
+    } catch (error) {
+        res.status(500).send('Gagal mengambil komentar');
     }
 });
 
