@@ -5,17 +5,18 @@ const app = express();
 const port = 3000;
 
 app.use(bodyParser.json());
-app.use(express.static('public')); // Serve static files from 'public' folder
+app.use(express.static('public'));
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: true }));
 
 // Dummy users database
-const users = { 'user': 'password' }; // Username: Password
+const users = { 'user': 'password' };
 
 // Login endpoint
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
     if (users[username] && users[username] === password) {
         req.session.user = username;
+        console.log(`User ${username} logged in`);
         res.status(200).send('Login successful');
     } else {
         res.status(401).send('Invalid credentials');
@@ -23,23 +24,20 @@ app.post('/login', (req, res) => {
 });
 
 // Comments endpoint
+let comments = []; // Temporary storage for comments
+
 app.get('/comments', (req, res) => {
-    // Retrieve comments from database or file
-    // For simplicity, using an array here
-    const comments = [
-        { username: 'user1', comment: 'Great website!' },
-        { username: 'user2', comment: 'Very informative.' }
-    ];
     res.json(comments);
 });
 
 app.post('/comments', (req, res) => {
     if (!req.session.user) {
+        console.log('Unauthorized comment attempt');
         return res.status(403).send('Unauthorized');
     }
     const { comment } = req.body;
-    // Save comment to database
-    // Here we just send a success response
+    comments.push({ username: req.session.user, comment });
+    console.log(`Comment added by ${req.session.user}: ${comment}`);
     res.status(200).send('Comment added');
 });
 
