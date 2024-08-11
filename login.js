@@ -1,6 +1,5 @@
 document.getElementById('loginForm').addEventListener('submit', async (event) => {
     event.preventDefault();
-
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
@@ -11,8 +10,9 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
     });
 
     if (response.ok) {
-        window.location.href = 'index.html'; // Redirect to main page after login
+        alert('Login successful');
+        window.location.href = '/'; // Redirect to homepage
     } else {
-        alert('Login failed!');
+        alert('Invalid credentials');
     }
 });
