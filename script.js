@@ -1,40 +1,41 @@
+document.getElementById('loginForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    const response = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+    });
+
+    if (response.ok) {
+        alert('Login successful');
+        window.location.href = '/'; // Redirect to homepage
+    } else {
+        alert('Invalid credentials');
+    }
+});
+
+// Contoh pengiriman komentar
 document.addEventListener('DOMContentLoaded', () => {
     const commentForm = document.getElementById('commentForm');
-    const commentsList = document.getElementById('commentsList');
+    if (commentForm) {
+        commentForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const comment = document.getElementById('comment').value;
 
-    // Load comments from server
-    const loadComments = async () => {
-        const response = await fetch('/comments');
-        const comments = await response.json();
-        commentsList.innerHTML = comments.map(comment => 
-            `<li><strong>${comment.username}:</strong> ${comment.comment}</li>`
-        ).join('');
-    };
+            const response = await fetch('/comments', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ comment })
+            });
 
-    loadComments();
-
-    commentForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        
-        // Check if user is logged in
-        const loginCheckResponse = await fetch('/login/check', { method: 'GET' });
-        if (loginCheckResponse.status === 403) {
-            alert('You must be logged in to comment');
-            return;
-        }
-
-        const comment = document.getElementById('comment').value;
-        const response = await fetch('/comments', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ comment })
+            if (response.ok) {
+                alert('Comment submitted');
+            } else {
+                alert('Failed to submit comment');
+            }
         });
-
-        if (response.ok) {
-            document.getElementById('comment').value = '';
-            loadComments();
-        } else {
-            alert('Failed to add comment');
-        }
-    });
+    }
 });
